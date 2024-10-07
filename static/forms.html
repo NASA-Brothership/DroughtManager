@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Farm Risk Assessment</title>
+    <link rel="stylesheet" href="static/css/styles.css"> <!-- Link to external CSS -->
+    <style>
+        /* Loader styling */
+        .loader {
+            border: 8px solid rgba(255, 255, 255, 0.3); /* Light border */
+            border-left: 8px solid #D65125; /* Strong orange for the spinner */
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite; /* Spin animation */
+            margin: 20px auto; /* Center the loader */
+            display: none; /* Hidden by default */
+        }
+
+        /* Spin animation */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Farm Drought Risk Assessment</h1>
+            <p>Assess potential drought risk and get mitigation suggestions</p>
+        </header>
+
+        <main>
+            <section class="intro">
+                <h2>Enter Farm Data</h2>
+                <form id="farm-data-form">
+                    <div class="input-group">
+                        <label for="crop-type">Crop Type:</label>
+                        <select id="crop-type" name="cropType" required>
+                            <option value="">Select Crop</option>
+                            <option value="Corn">Corn</option>
+                            <option value="Wheat">Wheat</option>
+                            <option value="Soybean">Soybean</option>
+                            <option value="Cotton">Cotton</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="irrigation">Irrigation (yes/no):</label>
+                        <div class="radio-group">
+                            <input type="radio" id="irrigation-yes" name="irrigation" value="yes" required>
+                            <label for="irrigation-yes">Yes</label>
+                            <input type="radio" id="irrigation-no" name="irrigation" value="no" required>
+                            <label for="irrigation-no">No</label>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="planting-period">Planting Period:</label>
+                        <div class="radio-group">
+                            <input type="radio" id="planting-before" name="plantingPeriod" value="BEFORE" required>
+                            <label for="planting-before">Before</label>
+                            <input type="radio" id="planting-after" name="plantingPeriod" value="AFTER" required>
+                            <label for="planting-after">After</label>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="existing-crops">Existing Crops (yes/no):</label>
+                        <div class="radio-group">
+                            <input type="radio" id="existing-yes" name="existingCrops" value="yes" required>
+                            <label for="existing-yes">Yes</label>
+                            <input type="radio" id="existing-no" name="existingCrops" value="no" required>
+                            <label for="existing-no">No</label>
+                        </div>
+                    </div>
+                    <a href="#" class="btn" id="submit-form">Submit</a>
+                </form>
+            </section>
+
+            <section id="results" style="display: none;">
+                <h2>Drought Risk Analysis</h2>
+                <div id="analysis-results">
+                    <!-- Results will be populated here -->
+                </div>
+                <a href="#" class="btn" onclick="resetForm()">Start Over</a>
+            </section>
+
+            <!-- Loading Indicator -->
+            <div class="loader" id="loader"></div>
+
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Brothership Solutions</p>
+        </footer>
+    </div>
+
+    <!-- Link to external JavaScript file -->
+    <script src="static/js/main.js"></script>
+
+</body>
+</html>
