@@ -1,0 +1,40 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "main.py",
+        "use": "@vercel/python"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/",
+        "dest": "main.py"
+      },
+      {
+        "src": "/forms",
+        "dest": "main.py"
+      },
+      {
+        "src": "/satellite",
+        "dest": "main.py"
+      },
+      {
+        "src": "/drought-analysis",
+        "dest": "main.py"
+      },
+      {
+        "src": "/plants",
+        "dest": "/app/plants.py"
+      },
+      {
+        "src": "/mean-water-balance",
+        "dest": "/app/wbi.py"
+      },
+      {
+        "src": "/water-balance-map-tile",
+        "dest": "/app/wbi.py"
+      }  
+    ]
+  }
+  

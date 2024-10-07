@@ -1,9 +1,14 @@
+import os
+
 from app.analysis import analyze_drought
 from app.plants import plants_bp
 from app.wbi import wbi_bp
 
+from dotenv import load_dotenv
 from flask import Flask, request, send_from_directory
 from flask_cors import CORS
+
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
@@ -36,5 +41,6 @@ def drought_analysis_route():
     }
     return analyze_drought(data_input)
 
+# Main
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000, debug=True)
+    app.run(host="0.0.0.0", port=os.getenv('BACKEND_PUBLISHED_PORT'), debug=True)
