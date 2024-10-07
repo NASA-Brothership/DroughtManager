@@ -29,7 +29,7 @@ def drought_analysis_route():
         "crop_type": request.json.get('crop_type'),
         "latitude": request.json.get('latitude'),
         "longitude": request.json.get('longitude'),
-        "radius_km": request.json.get('radius_km'),
+        "radius_km": int(request.json.get('radius_km')),
         "is_irrigated": request.json.get('is_irrigated'),
         "planting_period": request.json.get('planting_period'),
         "existing_crops": request.json.get('existing_crops')

@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const cropTypeSelect = document.getElementById('crop-type');
 
     // Fetch the list of plants from the backend
-    fetch('http://localhost:8000/plants')
+    fetch('/plants')
         .then(response => response.json())
         .then(plants => {
             // Clear existing options
@@ -56,6 +56,7 @@ formsButton.addEventListener('click', function(event) {
     // Retrieve GPS coordinates
     getCoordinates(function(latitude, longitude) {
         const cropType = document.getElementById('crop-type').value;
+        const radiusKm = document.getElementById('radius-km').value;
         const isIrrigated = document.querySelector('input[name="irrigation"]:checked').value;
         const plantingPeriod = document.querySelector('input[name="plantingPeriod"]:checked').value;
         const existingCrops = document.querySelector('input[name="existingCrops"]:checked').value;
@@ -64,14 +65,14 @@ formsButton.addEventListener('click', function(event) {
             crop_type: cropType,
             latitude: latitude,
             longitude: longitude,
-            radius_km: 10,
+            radius_km: radiusKm,
             is_irrigated: isIrrigated,
             planting_period: plantingPeriod,
             existing_crops: existingCrops
         };
 
         // Perform REST API call
-        fetch('http://localhost:8000/drought-analysis', {
+        fetch('/drought-analysis', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
