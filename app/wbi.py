@@ -1,6 +1,13 @@
+import datetime
+import json
+import logging
+
 from flask import Blueprint, jsonify, request
 import ee
-import json
+
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 wbi_bp = Blueprint('wbi', __name__)
 
@@ -12,36 +19,23 @@ with open('./private-key.json') as f:
 def initialize_earth_engine():
     credentials = ee.ServiceAccountCredentials(private_key['client_email'], './private-key.json')
     ee.Initialize(credentials)
-    print('Authenticated with Earth Engine')
 
 initialize_earth_engine()
 
-# Endpoint to get water balance index data
-@wbi_bp.route('/mean-water-balance', methods=['GET'])
-def get_mean_wbi():
-    latitude = request.args.get('latitude', type=float)
-    longitude = request.args.get('longitude', type=float)
-    radius_km = request.args.get('radius_km', type=float)
+def get_dates():
+    """Get today's date and start date for the last year."""
+    today = datetime.date.today()
+    start_date = (today - datetime.timedelta(days=365)).strftime('%Y-%m-%d')
+    end_date = today.strftime('%Y-%m-%d')
+    return start_date, end_date
 
-
-@wbi_bp.route('/water-balance-map-tile', methods=['GET'])
-def get_wbi_url():
-    latitude = request.args.get('latitude', type=float)
-    longitude = request.args.get('longitude', type=float)
-
-    if latitude is None or longitude is None:
-        return jsonify({"error": "Latitude and longitude must be provided"}), 400
-
-    # Define a point around which to display the map (latitude, longitude)
+def create_region(latitude, longitude, radius_km):
+    """Create a region around the given latitude and longitude."""
     point = ee.Geometry.Point([longitude, latitude])
+    return point.buffer(radius_km * 1000)  # Convert km to meters
 
-    # Create a region around the point (e.g., 100 km buffer)
-    region = point.buffer(100000)  # 100 km buffer around the point
-
-    start_date = '2023-10-03'
-    end_date = '2024-10-03'
-
-    # Fetch ET and precipitation data
+def fetch_wbi_data(region, start_date, end_date):
+    """Fetch WBI data using Earth Engine."""
     ET = (ee.ImageCollection('MODIS/061/MOD16A2GF')
           .filterDate(start_date, end_date)
           .select('ET')
@@ -54,25 +48,55 @@ def get_wbi_url():
                      .mean()
                      .clip(region))
 
-    # Calculate the Water Balance Index (WBI)
-    water_balance_index = ET.subtract(precipitation).rename('WBI')
+    return ET.subtract(precipitation).rename('WBI')
+
+def get_mean_wbi(latitude, longitude, radius_km):
+
+    start_date, end_date = get_dates()
+    region = create_region(latitude, longitude, radius_km)
+    
+    water_balance_index = fetch_wbi_data(region, start_date, end_date)
+
+    water_balance_index_mean = water_balance_index.reduceRegion(
+        reducer=ee.Reducer.mean(),
+        geometry=region,
+        scale=5566,
+        maxPixels=1e9
+    ).getInfo()
+
+    # Print the value to the console
+    logger.debug("Water Balance Index Mean: %s", water_balance_index_mean)
+
+    # Include the mean value
+    return water_balance_index_mean['WBI']
+
+@wbi_bp.route('/water-balance-map-tile', methods=['GET'])
+def get_wbi_url():
+    latitude = request.args.get('latitude', type=float)
+    longitude = request.args.get('longitude', type=float)
+
+    if latitude is None or longitude is None:
+        return jsonify({"error": "Latitude and longitude must be provided"}), 400
+    
+    start_date, end_date = get_dates()
+    region = create_region(latitude, longitude, radius_km=100)  # Using a fixed 100 km buffer for map tiles
+    
+    water_balance_index = fetch_wbi_data(region, start_date, end_date)
 
     water_balance_index_stats = water_balance_index.reduceRegion(
-        reducer=ee.Reducer.percentile([2, 98]),  # Calculate min and max
+        reducer=ee.Reducer.percentile([2, 98]),
         geometry=region,
-        scale=5566,  # Adjust scale as needed (in meters)
-        maxPixels=1e9  # Increase if needed
+        scale=5566,
+        maxPixels=1e9
     ).getInfo()
 
     vis_params = {
-        'min': water_balance_index_stats['WBI_p2'],  # Minimum value of WBI (in mm/day)
-        'max': water_balance_index_stats['WBI_p98'],  # Maximum value of WBI (in mm/day)
-        'palette': ['red', 'white', 'blue']  # Palette for low to high WBI values
+        'min': water_balance_index_stats['WBI_p2'],
+        'max': water_balance_index_stats['WBI_p98'],
+        'palette': ['red', 'white', 'blue']
     }
 
-    # Use getMapId to obtain mapId and token
-    map_id_object = ET.getMapId(vis_params)
+    map_id_object = water_balance_index.getMapId(vis_params)
     tile_url = map_id_object['tile_fetcher'].url_format
 
-    # Respond with the tile URL
     return jsonify({'url': tile_url})

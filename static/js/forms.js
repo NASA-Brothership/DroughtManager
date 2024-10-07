@@ -64,7 +64,7 @@ formsButton.addEventListener('click', function(event) {
             crop_type: cropType,
             latitude: latitude,
             longitude: longitude,
-            radius_km: 1,
+            radius_km: 10,
             is_irrigated: isIrrigated,
             planting_period: plantingPeriod,
             existing_crops: existingCrops
@@ -87,7 +87,9 @@ formsButton.addEventListener('click', function(event) {
             const resultsSection = document.getElementById('results');
             const analysisResults = document.getElementById('analysis-results');
             analysisResults.innerHTML = `
-                <p><strong>Drought risk:</strong> ${data.drought_risk}</p>
+                <p><strong>Plant drought resilience:</strong> ${data.drought_risk}</p>
+                <p><strong>Mean water balance in your region:</strong> ${data.wbi_mean}</p>
+                <a href="/water-balance?latitude=${latitude}&longitude=${longitude}" target="_blank">See water balance in your area here</a>
             `;
             resultsSection.style.display = 'block';
 
