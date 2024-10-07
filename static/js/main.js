@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const cropTypeSelect = document.getElementById('crop-type');
 
     // Fetch the list of plants from the backend
-    fetch('http://localhost:8000/plants')
+    fetch('http://localhost:5000/plants')
         .then(response => response.json())
         .then(plants => {
             // Clear existing options
@@ -71,7 +71,7 @@ formsButton.addEventListener('click', function(event) {
         };
 
         // Perform REST API call
-        fetch('http://localhost:8000/drought-analysis', {
+        fetch('http://localhost:5000/drought-analysis', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
