@@ -11,13 +11,13 @@ def analyze_drought(data_input):
     # Call the function to get drought risk from plants.py
     plant_drought_risk = get_plant_drought_risk(crop_type)
 
-    # Call the function to get soil moisture data from soil_moisture.py
-    moisture_stats = get_mean_wbi()
+    # Call the function to get water balance data from wbi.py
+    wbi_mean = get_mean_wbi(latitude, longitude, radius_km)
 
     # Combine the results into a single output
     output = {
         "drought_risk": plant_drought_risk.value,  # Drought risk rating for the crop
-        "soil_moisture": moisture_stats  # Water Balance Index data
+        "wbi_mean": wbi_mean  # Water Balance Index data
     }
 
     return jsonify(output)

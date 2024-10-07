@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Farm Risk Assessment</title>
-    <link rel="stylesheet" href="static/css/styles.css"> <!-- Link to external CSS -->
+    <link rel="stylesheet" href="static/css/styles.css">
     <style>
         /* Loader styling */
         .loader {
@@ -62,6 +62,8 @@
                         <div class="radio-group">
                             <input type="radio" id="planting-before" name="plantingPeriod" value="BEFORE" required>
                             <label for="planting-before">Before</label>
+                            <input type="radio" id="planting-during" name="plantingPeriod" value="DURING" required>
+                            <label for="planting-during">During</label>
                             <input type="radio" id="planting-after" name="plantingPeriod" value="AFTER" required>
                             <label for="planting-after">After</label>
                         </div>
@@ -83,6 +85,7 @@
                 <h2>Drought Risk Analysis</h2>
                 <div id="analysis-results">
                     <!-- Results will be populated here -->
+                    <a href="/wbi?{}" target="_blank">See water balance in your region here</a>
                 </div>
                 <a href="#" class="btn" onclick="resetForm()">Start Over</a>
             </section>
@@ -97,8 +100,7 @@
         </footer>
     </div>
 
-    <!-- Link to external JavaScript file -->
-    <script src="static/js/main.js"></script>
+    <script src="static/js/forms.js"></script>
 
 </body>
 </html>

@@ -19,9 +19,9 @@ def serve_index():
 def serve_forms():
     return send_from_directory('static', 'forms.html')
 
-@app.route('/satellite')
+@app.route('/water-balance')
 def serve_satellite():
-    return send_from_directory('static', 'satellite.html')
+    return send_from_directory('static', 'water-balance.html')
 
 @app.route("/drought-analysis", methods=["POST"])
 def drought_analysis_route():
