@@ -2,6 +2,7 @@ const form = document.getElementById('farm-data-form');
 const formsButton = document.getElementById('submit-form');
 const loader = document.getElementById('loader');
 
+
 document.addEventListener('DOMContentLoaded', function() {
     const cropTypeSelect = document.getElementById('crop-type');
 
@@ -84,13 +85,15 @@ formsButton.addEventListener('click', function(event) {
             // Hide the loader
             loader.style.display = 'none';
 
+            const recommendation = data.recommendation || 'No recommendation available for this risk level.';
+
             // Display results
             const resultsSection = document.getElementById('results');
             const analysisResults = document.getElementById('analysis-results');
             analysisResults.innerHTML = `
-                <p><strong>Plant drought resilience:</strong> ${data.drought_risk}</p>
-                <p><strong>Mean water balance in your region:</strong> ${data.wbi_mean}</p>
+                <p><span class='bold'>Drought risk:</span>${data.drought_risk}</p>
                 <a href="/water-balance?latitude=${latitude}&longitude=${longitude}" target="_blank">See water balance in your area here</a>
+                <p><span class='bold'>Recommendation:</span>${recommendation}</p>
             `;
             resultsSection.style.display = 'block';
 

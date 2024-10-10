@@ -2,6 +2,8 @@ import datetime
 import json
 import logging
 
+from utils.enums import DroughtRiskValue
+
 from flask import Blueprint, jsonify, request
 import ee
 
@@ -69,6 +71,20 @@ def get_mean_wbi(latitude, longitude, radius_km):
 
     # Include the mean value
     return water_balance_index_mean['WBI']
+
+
+def get_wbi_risk(mean_wbi: float) -> DroughtRiskValue:
+    if mean_wbi <= -50:
+        return DroughtRiskValue.VERY_HIGH
+    elif mean_wbi < -10:
+        return DroughtRiskValue.HIGH
+    elif mean_wbi < 0:
+        return DroughtRiskValue.MEDIUM
+    elif mean_wbi < 10:
+        return DroughtRiskValue.LOW
+    else:
+        return DroughtRiskValue.VERY_LOW
+
 
 @wbi_bp.route('/water-balance-map-tile', methods=['GET'])
 def get_wbi_url():

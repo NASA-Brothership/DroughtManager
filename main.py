@@ -4,11 +4,8 @@ from app.analysis import analyze_drought
 from app.plants import plants_bp
 from app.wbi import wbi_bp
 
-from dotenv import load_dotenv
 from flask import Flask, request, send_from_directory
 from flask_cors import CORS
-
-load_dotenv()
 
 app = Flask(__name__)
 CORS(app)

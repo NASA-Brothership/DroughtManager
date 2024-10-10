@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify
-from crops.code_enums import DroughtRisk
-import crops.plants as plants
+from utils.enums import DroughtRiskValue
+import utils.plants as plants
 
 plants_bp = Blueprint('plants', __name__)
 
@@ -9,16 +9,16 @@ def get_plants():
     return jsonify(list(plants.all_plants))
 
 # Function to get drought risk category for a crop
-def get_plant_drought_risk(crop: str) -> DroughtRisk:
+def get_plant_drought_risk(crop: str) -> DroughtRiskValue:
     # Check for crop in each drought risk category
     print(crop)
     if crop in plants.very_low_drought_risk:
-        return DroughtRisk.VERY_LOW
+        return DroughtRiskValue.VERY_LOW
     elif crop in plants.low_drought_risk:
-        return DroughtRisk.LOW
+        return DroughtRiskValue.LOW
     elif crop in plants.medium_drought_risk:
-        return DroughtRisk.MEDIUM
+        return DroughtRiskValue.MEDIUM
     elif crop in plants.high_drought_risk:
-        return DroughtRisk.HIGH
+        return DroughtRiskValue.HIGH
     elif crop in plants.very_high_drought_risk:
-        return DroughtRisk.VERY_HIGH
+        return DroughtRiskValue.VERY_HIGH

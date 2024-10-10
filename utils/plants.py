@@ -1,4 +1,4 @@
-from crops.code_enums import VeryLowDroughtRisk, LowDroughtRisk, MediumDroughtRisk, HighDroughtRisk, VeryHighDroughtRisk
+from utils.enums import VeryLowDroughtRisk, LowDroughtRisk, MediumDroughtRisk, HighDroughtRisk, VeryHighDroughtRisk
 
 very_low_drought_risk = {enum_member.value for enum_member in VeryLowDroughtRisk}
 low_drought_risk = {enum_member.value for enum_member in LowDroughtRisk}
